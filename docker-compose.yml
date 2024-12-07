@@ -1,0 +1,29 @@
+services:
+  nats:
+    image: nats:2.10.12
+    ports:
+      - "4222:4222"
+      - "8222:8222"
+
+  vault:
+    image: hashicorp/vault:1.15
+    ports:
+      - "8200:8200"
+    environment:
+      - VAULT_DEV_ROOT_TOKEN_ID=dev-token
+    cap_add:
+      - IPC_LOCK
+
+  prometheus:
+    image: prom/prometheus:v2.50.0
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana:10.3.0
+    ports:
+      - "3001:3000"
+    depends_on:
+      - prometheus
